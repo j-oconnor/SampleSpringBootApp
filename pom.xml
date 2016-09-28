@@ -25,7 +25,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Spring Boot Simple Sample</description>
 	<url>http://projects.spring.io/spring-boot/</url>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<organization>
 		<name>Pivotal Software, Inc.</name>
 		<url>http://www.spring.io</url>
