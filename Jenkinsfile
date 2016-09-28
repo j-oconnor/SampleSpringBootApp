@@ -3,22 +3,22 @@
 stage 'Dev' 
 
 node {
-	
+
 	  echo 'Starting Pipeline Execution'
 
 	  
-	  stage ('Build-Verify') {	  
+	  stage 'Build-Verify' 	  
 		  checkout scm		  
 		  def v= version()
 		  if (v) {
 		  	echo "Building version ${v}"
 		  }		  
 		  sh 'mvn clean compile test -B verify'	  
-	  }
 	  
-	  stage 'Build-Package' {	  
+	  
+	  stage 'Build-Package' 	  
 	  	sh 'mvn install deploy -Dmaven.test.skip=true'
-	  }
+	  
 
 }
 
