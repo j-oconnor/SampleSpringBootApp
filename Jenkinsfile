@@ -1,8 +1,9 @@
 #!groovy
 
 stage 'Dev' 
-milestone 1
+
 node {
+	milestone 1
 	  echo 'Starting Pipeline Execution'
 
 	  
