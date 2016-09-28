@@ -30,4 +30,6 @@ def version() {
 }
 
 stage 'QA'
-echo 'unimplemented'
+node {
+	echo 'unimplemented'
+}
