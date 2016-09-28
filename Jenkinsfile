@@ -1,7 +1,7 @@
 #!groovy
 
 
-stage ('Dev') {
+stage 'Dev' {
 	milestone 1
 	node {
 	  echo 'Starting Pipeline Execution'
@@ -27,19 +27,19 @@ def version() {
 }
 
 
-stage ('QA') {
+stage 'QA' {
 	milestone 2
 	echo 'unimplemented'
 }
 
 
-stage ('Staging') {
+stage 'Staging' {
 	milestone 3
 	echo 'unimplemented'
 }
 
 
-stage ('Production') {
+stage 'Production' {
 	milestone 4
 	echo 'unimplemented'
 }
