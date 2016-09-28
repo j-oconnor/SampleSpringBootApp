@@ -1,7 +1,8 @@
 #!groovy
 
 node {
-  sh 'echo hello'
+  sh 'Starting Pipeline Execution'
+  git 'https://github.homedepot.com/CloudEngineering/SampleSpringBootApp.git'
   sh 'ls -als'
   stage 'Stage 1'
   
