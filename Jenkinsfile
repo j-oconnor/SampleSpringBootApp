@@ -3,7 +3,20 @@
 node {
   sh 'echo hello'
   stage 'Stage 1'
-  echo 'Hello World 1'
+  
+  def v= version()
+  if (v) {
+  	echo "Building version ${v}"
+  }
+  withEnv(["PATH+MAVEN=${tool 'M3'}/bin"]) {
+  	sh 'mvn -B verify'
+  }
+  
   stage 'Stage 2'
+  
   echo 'Hello World 2'
+ }
+ def version() {
+ 	def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+ 	matcher ? matcher[0][1] : null
  }
