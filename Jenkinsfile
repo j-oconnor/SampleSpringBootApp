@@ -1,8 +1,8 @@
 #!groovy
 
-stage ([name:'Dev']) {
-	milestone 1
-	node {
+stage 'Dev' 
+milestone 1
+node {
 	  echo 'Starting Pipeline Execution'
 
 	  
@@ -19,9 +19,9 @@ stage ([name:'Dev']) {
 	  	sh 'mvn install deploy -Dmaven.test.skip=true'
 	  }
 
-	}
-
 }
+
+
 
 def version() {
 	def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
