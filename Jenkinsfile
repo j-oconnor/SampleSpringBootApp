@@ -1,7 +1,8 @@
 #!groovy
 
-milestone 1
+
 stage "Dev" {
+	milestone 1
 	node {
 	  echo 'Starting Pipeline Execution'
 
@@ -25,17 +26,20 @@ def version() {
  	matcher ? matcher[0][1] : null
 }
 
-milestone 2
+
 stage "QA" {
+	milestone 2
 	echo 'unimplemented'
 }
 
-milestone 3
+
 stage "Stage" {
+	milestone 3
 	echo 'unimplemented'
 }
 
-milestone 4
+
 stage "Production" {
+	milestone 4
 	echo 'unimplemented'
 }
