@@ -18,6 +18,6 @@ node {
   echo 'Hello World 2'
  }
  def version() {
- 	def matcher = readFile('SampleSpringBootApp/pom.xml') =~ '<version>(.+)</version>'
+ 	def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
  	matcher ? matcher[0][1] : null
  }
