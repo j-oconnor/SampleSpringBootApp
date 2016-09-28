@@ -3,7 +3,7 @@
 stage 'Dev' 
 
 node {
-	milestone 1
+	
 	  echo 'Starting Pipeline Execution'
 
 	  
