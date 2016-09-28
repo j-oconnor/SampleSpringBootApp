@@ -9,9 +9,9 @@ node {
   if (v) {
   	echo "Building version ${v}"
   }
-  withEnv(["PATH+MAVEN=${tool 'M3'}/bin"]) {
-  	sh 'mvn -B verify'
-  }
+  
+  sh 'mvn -B verify'
+  
   
   stage 'Stage 2'
   
