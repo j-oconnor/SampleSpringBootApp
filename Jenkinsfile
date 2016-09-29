@@ -52,9 +52,9 @@ def deploy_gcp() {
 	def ARTIFACT_ID = BUILD_PROPERTIES['project.artifactId']
 	def GROUP_ID= BUILD_PROPERTIES['project.groupId']
 	def VERSION= BUILD_PROPERTIES['project.version']
-	def CDM_TMPL_URL = 'https://storage.googleapis.com/'+PROJECT+'-bootstrap/cdm-template-version.txt'
-	def httpRequestObject= httpRequest CDM_TMPL_URL
-	def CDM_TEMPLATE_VERSION = httpRequestObject.content
+	//def CDM_TMPL_URL = 'https://storage.googleapis.com/'+PROJECT+'-bootstrap/cdm-template-version.txt'
+	//def httpRequestObject= httpRequest CDM_TMPL_URL
+	//def CDM_TEMPLATE_VERSION = httpRequestObject.content
 	//export CDM_TEMPLATE_VERSION=${CDM_TEMPLATE_VERSION:-v2.0.8}
 	//hammer --show-version
 	def CONSUL_HEALTH_URI='catalog/admin/health'
@@ -65,7 +65,7 @@ def deploy_gcp() {
 	echo VERSION
 	echo ARTIFACT_ID
 	echo GROUP_ID
-	echo CDM_TEMPLATE_VERSION
+	//echo CDM_TEMPLATE_VERSION
 	/*
 	gsutil rsync -d -r bootstrap/ gs://${PROJECT}-artifacts/releases/${GROUP_ID}/${ARTIFACT_ID}/${VERSION}/data-load/bootstrap/
 	deploy_autohealing.sh -d olt-app-$ARTIFACT_ID-ah -t ./patterns/autohealing.jinja -u /$CONSUL_HEALTH_URI -p 8080
