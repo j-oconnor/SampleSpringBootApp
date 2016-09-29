@@ -48,7 +48,7 @@ def deploy_gcp() {
 	def PROJECT = sh(returnStdout: true, script: '/usr/share/google/get_metadata_value project-id').trim()
 	
 	def d = [test: 'Default', something: 'Default', other: 'Default']
-	def BUILD_PROPERTIES = readProperties defaults: d, file: TMPDIR + '/spring-boot-sample-simple.properties', text: 'other=Override'
+	def BUILD_PROPERTIES = readProperties(defaults: d, file: TMPDIR + '/spring-boot-sample-simple.properties', text: 'other=Override')
 	def ARTIFACT_ID = BUILD_PROPERTIES['project.artifactId']
 	def GROUP_ID= BUILD_PROPERTIES['project.groupId']
 	def VERSION= BUILD_PROPERTIES['project.version']
