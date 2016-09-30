@@ -5,18 +5,21 @@ if (env.BRANCH_NAME == 'develop') {
 	stage 'Develop'
 		node {		  
 			stage 'Build-Compile'
-				//build_java()			  
+				build_java()			  
 			stage 'Unit-Test'
-				//unit_test()		  
+				unit_test()		  
 		  	stage 'Package-Upload' 	  
-		  		//package_upload()
+		  		package_upload()
 		  	stage 'Deploy_HD-WWW-DEV'
 		  		deploy_gcp()
 		}
-} else if (env.BRANCH_NAME == 'stage') {
+} else if (env.BRANCH_NAME == 'stage' || env.BRANCH_NAME == 'master') {
 		stage 'Stage'
 		node {
-			echo 'Stage unimplemented'
+			stage 'Build-Compile'
+				build_java()
+			stage 'Deploy_HD-WWW-STAGE'
+		  		deploy_gcp()
 		}
 } else {
 	//feature
@@ -56,7 +59,6 @@ def deploy_gcp() {
 	//def httpRequestObject= httpRequest CDM_TMPL_URL
 	//def CDM_TEMPLATE_VERSION = httpRequestObject.content
 	def CDM_TEMPLATE_VERSION = 'v2.0.10'
-	//export CDM_TEMPLATE_VERSION=${CDM_TEMPLATE_VERSION:-v2.0.8}
 	//hammer --show-version
 	def CONSUL_HEALTH_URI='catalog/admin/health'
 	def HEALTH_CHECK_URI="/" + CONSUL_HEALTH_URI
@@ -67,32 +69,16 @@ def deploy_gcp() {
 	echo ARTIFACT_ID
 	echo GROUP_ID
 	echo CDM_TEMPLATE_VERSION
+
 	//sh 'gsutil rsync -d -r bootstrap/ gs://'+PROJECT+'-artifacts/releases/'+GROUP_ID+'/'+ARTIFACT_ID+'/'+VERSION+'/data-load/bootstrap/deploy_autohealing.sh -d olt-app-'+ARTIFACT_ID+'-ah -t ./patterns/autohealing.jinja -u '+HEALTH_CHECK_URI+' -p '+HEALTH_CHECK_PORT
-	//def curr_dir = pwd
-	//new File(curr_dir+'hammer-properties.yaml.orig') << new File(curr_dir+'hammer-properties.yaml').text
 	sh 'cp hammer-properties.yaml hammer-properties.yaml.orig'
 	sh 'sed -i.bak \'s/%VERSION%/'+VERSION+'/g\' hammer-properties.yaml'
-	sh 'sed -i.bak \'s/%CDM_TEMPLATE_VERSION%/'+CDM_TEMPLATE_VERSION+'/g\' hammer-properties.yaml'
+	sh 'sed -i.bak \'s/%CDM_TMPL_VER%/'+CDM_TEMPLATE_VERSION+'/g\' hammer-properties.yaml'
 	sh 'sed -i.bak \'s/%PROJECT%/'+PROJECT+'/g\' hammer-properties.yaml'
 	sh 'sed -i.bak \'s/%ARTIFACT_ID%/'+ARTIFACT_ID+'/g\' hammer-properties.yaml'
 	sh 'sed -i.bak \'s/%GROUP_ID%/'+GROUP_ID+'/g\' hammer-properties.yaml'
 	sh 'cat hammer-properties.yaml ; echo'
 	/*
-	
-
-	cp hammer-properties.yaml hammer-properties.yaml.orig
-
-	sh sed -i.bak "s/%VERSION%/${VERSION}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%CDM_TEMPLATE_VERSION%/${CDM_TEMPLATE_VERSION}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%PROJECT%/${PROJECT}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%ARTIFACT_ID%/${ARTIFACT_ID}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%GROUP_ID%/${GROUP_ID}/g" hammer-properties.yaml
-
-	cat hammer-properties.yaml ; echo
 	hammer -p ${PROJECT} --propertiesFile "hammer-properties.yaml" -d --deploymentType ActiveRotate_v5 --noPause
 	*/
 }
