@@ -70,7 +70,7 @@ def deploy_gcp() {
 	//sh 'gsutil rsync -d -r bootstrap/ gs://'+PROJECT+'-artifacts/releases/'+GROUP_ID+'/'+ARTIFACT_ID+'/'+VERSION+'/data-load/bootstrap/deploy_autohealing.sh -d olt-app-'+ARTIFACT_ID+'-ah -t ./patterns/autohealing.jinja -u '+HEALTH_CHECK_URI+' -p '+HEALTH_CHECK_PORT
 	//def curr_dir = pwd
 	//new File(curr_dir+'hammer-properties.yaml.orig') << new File(curr_dir+'hammer-properties.yaml').text
-	sh cp hammer-properties.yaml hammer-properties.yaml.orig
+	//sh cp hammer-properties.yaml hammer-properties.yaml.orig
 	sh sed -i.bak 's/%VERSION%/'+VERSION+'/g' hammer-properties.yaml
 	sh sed -i.bak 's/%CDM_TEMPLATE_VERSION%/'+CDM_TEMPLATE_VERSION+'/g' hammer-properties.yaml
 	sh sed -i.bak 's/%PROJECT%/'+PROJECT+'/g' hammer-properties.yaml
