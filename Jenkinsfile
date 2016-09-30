@@ -5,11 +5,11 @@ if (env.BRANCH_NAME == 'develop') {
 	stage 'Develop'
 		node {		  
 			stage 'Build-Compile'
-				build_java()			  
+				//build_java()			  
 			stage 'Unit-Test'
-				unit_test()		  
+				//unit_test()		  
 		  	stage 'Package-Upload' 	  
-		  		package_upload()
+		  		//package_upload()
 		  	stage 'Deploy_HD-WWW-DEV'
 		  		deploy_gcp()
 		}
