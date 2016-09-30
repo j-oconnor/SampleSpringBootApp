@@ -55,6 +55,7 @@ def deploy_gcp() {
 	//def CDM_TMPL_URL = 'https://storage.googleapis.com/'+PROJECT+'-bootstrap/cdm-template-version.txt'
 	//def httpRequestObject= httpRequest CDM_TMPL_URL
 	//def CDM_TEMPLATE_VERSION = httpRequestObject.content
+	def CDM_TEMPLATE_VERSION = 'v2.0.10'
 	//export CDM_TEMPLATE_VERSION=${CDM_TEMPLATE_VERSION:-v2.0.8}
 	//hammer --show-version
 	def CONSUL_HEALTH_URI='catalog/admin/health'
@@ -65,14 +66,22 @@ def deploy_gcp() {
 	echo VERSION
 	echo ARTIFACT_ID
 	echo GROUP_ID
-	//echo CDM_TEMPLATE_VERSION
+	echo CDM_TEMPLATE_VERSION
+	//sh 'gsutil rsync -d -r bootstrap/ gs://'+PROJECT+'-artifacts/releases/'+GROUP_ID+'/'+ARTIFACT_ID+'/'+VERSION+'/data-load/bootstrap/deploy_autohealing.sh -d olt-app-'+ARTIFACT_ID+'-ah -t ./patterns/autohealing.jinja -u '+HEALTH_CHECK_URI+' -p '+HEALTH_CHECK_PORT
+	def curr_dir = pwd
+	new File(curr_dir+'hammer-properties.yaml.orig') << new File(curr_dir+'hammer-properties.yaml').text
+	sh sed -i.bak 's/%VERSION%/'+VERSION+'/g' hammer-properties.yaml
+	sh sed -i.bak 's/%CDM_TEMPLATE_VERSION%/'+CDM_TEMPLATE_VERSION+'/g' hammer-properties.yaml
+	sh sed -i.bak 's/%PROJECT%/'+PROJECT+'/g' hammer-properties.yaml
+	sh sed -i.bak 's/%ARTIFACT_ID%/'+ARTIFACT_ID+'/g' hammer-properties.yaml
+	sed -i.bak 's/%GROUP_ID%/'+GROUP_ID+'/g' hammer-properties.yaml
+	sh cat hammer-properties.yaml ; echo
 	/*
-	gsutil rsync -d -r bootstrap/ gs://${PROJECT}-artifacts/releases/${GROUP_ID}/${ARTIFACT_ID}/${VERSION}/data-load/bootstrap/
-	deploy_autohealing.sh -d olt-app-$ARTIFACT_ID-ah -t ./patterns/autohealing.jinja -u /$CONSUL_HEALTH_URI -p 8080
+	
 
 	cp hammer-properties.yaml hammer-properties.yaml.orig
 
-	sed -i.bak "s/%VERSION%/${VERSION}/g" hammer-properties.yaml
+	sh sed -i.bak "s/%VERSION%/${VERSION}/g" hammer-properties.yaml
 
 	sed -i.bak "s/%CDM_TEMPLATE_VERSION%/${CDM_TEMPLATE_VERSION}/g" hammer-properties.yaml
 
