@@ -13,10 +13,13 @@ if (env.BRANCH_NAME == 'develop') {
 		  	stage 'Deploy_HD-WWW-DEV'
 		  		deploy_gcp()
 		}
-} else if (env.BRANCH_NAME == 'stage') {
+} else if (env.BRANCH_NAME == 'stage' || env.BRANCH_NAME == 'master') {
 		stage 'Stage'
 		node {
-			echo 'Stage unimplemented'
+			stage 'Build-Compile'
+				build_java()
+			stage 'Deploy_HD-WWW-STAGE'
+		  		deploy_gcp()
 		}
 } else {
 	//feature
@@ -48,14 +51,14 @@ def deploy_gcp() {
 	def PROJECT = sh(returnStdout: true, script: '/usr/share/google/get_metadata_value project-id').trim()
 	
 	def d = [test: 'Default', something: 'Default', other: 'Default']
-	def BUILD_PROPERTIES = readProperties defaults: d, file: TMPDIR + '/spring-boot-sample-simple.properties', text: 'other=Override'
+	def BUILD_PROPERTIES = readProperties(defaults: d, file: TMPDIR + '/spring-boot-sample-simple.properties', text: 'other=Override')
 	def ARTIFACT_ID = BUILD_PROPERTIES['project.artifactId']
 	def GROUP_ID= BUILD_PROPERTIES['project.groupId']
 	def VERSION= BUILD_PROPERTIES['project.version']
-	def CDM_TMPL_URL = 'https://storage.googleapis.com/'+PROJECT+'-bootstrap/cdm-template-version.txt'
-	def httpRequestObject= httpRequest CDM_TMPL_URL
-	def CDM_TEMPLATE_VERSION = httpRequestObject.content
-	//export CDM_TEMPLATE_VERSION=${CDM_TEMPLATE_VERSION:-v2.0.8}
+	//def CDM_TMPL_URL = 'https://storage.googleapis.com/'+PROJECT+'-bootstrap/cdm-template-version.txt'
+	//def httpRequestObject= httpRequest CDM_TMPL_URL
+	//def CDM_TEMPLATE_VERSION = httpRequestObject.content
+	def CDM_TEMPLATE_VERSION = 'v2.0.10'
 	//hammer --show-version
 	def CONSUL_HEALTH_URI='catalog/admin/health'
 	def HEALTH_CHECK_URI="/" + CONSUL_HEALTH_URI
@@ -66,23 +69,16 @@ def deploy_gcp() {
 	echo ARTIFACT_ID
 	echo GROUP_ID
 	echo CDM_TEMPLATE_VERSION
+
+	//sh 'gsutil rsync -d -r bootstrap/ gs://'+PROJECT+'-artifacts/releases/'+GROUP_ID+'/'+ARTIFACT_ID+'/'+VERSION+'/data-load/bootstrap/deploy_autohealing.sh -d olt-app-'+ARTIFACT_ID+'-ah -t ./patterns/autohealing.jinja -u '+HEALTH_CHECK_URI+' -p '+HEALTH_CHECK_PORT
+	sh 'cp hammer-properties.yaml hammer-properties.yaml.orig'
+	sh 'sed -i.bak \'s/%VERSION%/'+VERSION+'/g\' hammer-properties.yaml'
+	sh 'sed -i.bak \'s/%CDM_TMPL_VER%/'+CDM_TEMPLATE_VERSION+'/g\' hammer-properties.yaml'
+	sh 'sed -i.bak \'s/%PROJECT%/'+PROJECT+'/g\' hammer-properties.yaml'
+	sh 'sed -i.bak \'s/%ARTIFACT_ID%/'+ARTIFACT_ID+'/g\' hammer-properties.yaml'
+	sh 'sed -i.bak \'s/%GROUP_ID%/'+GROUP_ID+'/g\' hammer-properties.yaml'
+	sh 'cat hammer-properties.yaml ; echo'
 	/*
-	gsutil rsync -d -r bootstrap/ gs://${PROJECT}-artifacts/releases/${GROUP_ID}/${ARTIFACT_ID}/${VERSION}/data-load/bootstrap/
-	deploy_autohealing.sh -d olt-app-$ARTIFACT_ID-ah -t ./patterns/autohealing.jinja -u /$CONSUL_HEALTH_URI -p 8080
-
-	cp hammer-properties.yaml hammer-properties.yaml.orig
-
-	sed -i.bak "s/%VERSION%/${VERSION}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%CDM_TEMPLATE_VERSION%/${CDM_TEMPLATE_VERSION}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%PROJECT%/${PROJECT}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%ARTIFACT_ID%/${ARTIFACT_ID}/g" hammer-properties.yaml
-
-	sed -i.bak "s/%GROUP_ID%/${GROUP_ID}/g" hammer-properties.yaml
-
-	cat hammer-properties.yaml ; echo
 	hammer -p ${PROJECT} --propertiesFile "hammer-properties.yaml" -d --deploymentType ActiveRotate_v5 --noPause
 	*/
 }
