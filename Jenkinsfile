@@ -3,21 +3,25 @@
 
 if (env.BRANCH_NAME == 'develop') {
 	stage 'Develop'
-		node {		  
+		node('maven') {		  
 			stage 'Build-Compile'
 				build_java()			  
 			stage 'Unit-Test'
 				unit_test()		  
 		  	stage 'Package-Upload' 	  
 		  		package_upload()
+		}
+		node('k8s') {
 		  	stage 'Deploy_HD-WWW-DEV'
 		  		deploy_gcp()
 		}
 } else if (env.BRANCH_NAME == 'stage' || env.BRANCH_NAME == 'master') {
 		stage 'Stage'
-		node {
+		node('maven') {
 			stage 'Build-Compile'
 				build_java()
+		}
+		node('k8s') {
 			stage 'Deploy_HD-WWW-STAGE'
 		  		deploy_gcp()
 		}
