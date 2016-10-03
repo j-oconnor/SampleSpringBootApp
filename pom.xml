@@ -22,7 +22,7 @@
 	<groupId>com.homedepot</groupId>
 	<artifactId>spring-boot-sample-simple</artifactId>
 	<name>Spring Boot Simple Sample</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<description>Spring Boot Simple Sample</description>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<packaging>jar</packaging>
