@@ -1,5 +1,6 @@
 #!groovy
 
+// This is a comment
 if (env.BRANCH_NAME == 'develop') {
 	stage 'Develop'
 		node('maven') {
