@@ -1,14 +1,13 @@
 #!groovy
 
-
 if (env.BRANCH_NAME == 'develop') {
 	stage 'Develop'
-		node('maven') {		  
+		node('maven') {
 			stage 'Build-Compile'
-				build_java()			  
+				build_java()
 			stage 'Unit-Test'
-				unit_test()		  
-		  	stage 'Package-Upload' 	  
+				unit_test()
+		  	stage 'Package-Upload'
 		  		package_upload()
 		}
 		node('k8s') {
@@ -29,10 +28,10 @@ if (env.BRANCH_NAME == 'develop') {
 	//feature
 
 }
-	
+
 def build_java() {
 	checkout scm
-	sh 'mvn clean compile'	
+	sh 'mvn clean compile'
 }
 
 def unit_test() {
@@ -53,7 +52,7 @@ def deploy_gcp() {
 	def TMPDIR = '/tmp'
 	sh 'mvn clean antrun:run@generate-properties -U'
 	def PROJECT = sh(returnStdout: true, script: '/usr/share/google/get_metadata_value project-id').trim()
-	
+
 	def d = [test: 'Default', something: 'Default', other: 'Default']
 	def BUILD_PROPERTIES = readProperties(defaults: d, file: TMPDIR + '/spring-boot-sample-simple.properties', text: 'other=Override')
 	def ARTIFACT_ID = BUILD_PROPERTIES['project.artifactId']
@@ -86,11 +85,3 @@ def deploy_gcp() {
 	hammer -p ${PROJECT} --propertiesFile "hammer-properties.yaml" -d --deploymentType ActiveRotate_v5 --noPause
 	*/
 }
-
-
-
-
-
-
-
-
